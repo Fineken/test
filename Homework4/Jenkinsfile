@@ -8,11 +8,11 @@ pipeline {
                 //its calc library into byte code files, which are placed into the sources workspace directory
                 sh 'pwd'
                 sh 'ls'
-                sh 'python3 -m py_compile Homework4/Homework4/App/sources/calc.py'
+                sh 'python3 -m py_compile Homework4/App/sources/calc.py'
 
                 //This stash step saves the Python source code and compiled byte code files from the sources
                 //workspace directory for use in later stages.
-                stash(name: 'compiled-results', includes: 'Homework4/Homework4/App/sources/*.py*')
+                stash(name: 'compiled-results', includes: 'Homework4/App/sources/*.py*')
             }
         }
 
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 //This sh step executes pytest’s py.test command on sources/test_calc.py, which runs a set of
                 //unit tests (defined in test_calc.py) on the "calc" library’s add2 function.
-                sh 'py.test-3 --cov-report xml:Homework4/Homework4/App/coverage.xml --cov=Homework4/Homework4/App --verbose --alluredir test-reports Homework4/Homework4/App/sources/test_calc.py'
+                sh 'py.test-3 --cov-report xml:Homework4/App/coverage.xml --cov=Homework4/App --verbose --alluredir test-reports Homework4/App/sources/test_calc.py'
             }
 
             post {
@@ -41,7 +41,7 @@ pipeline {
                 script {
                     def scannerHome = tool 'FirstScanner'
                     withSonarQubeEnv(credentialsId: 'Ukraine', installationName: 'Perdoka') {
-                        sh "${scannerHome}/bin/sonar-scanner -D sonar.projectBaseDir=Homework4/Homework4/App"
+                        sh "${scannerHome}/bin/sonar-scanner -D sonar.projectBaseDir=Homework4/App"
                     }
                 }
             }
@@ -50,7 +50,7 @@ pipeline {
         stage('Run') {
             agent any
             steps {
-                sh "docker build -t myapp Homework4/Homework4/App"
+                sh "docker build -t myapp Homework4/App"
             }
         }
 
